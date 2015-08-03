@@ -37,17 +37,22 @@ void loop() {
   Serial.println(value);
   if (THRESHOLD < value && flag == false){
     flag = true;
+    fade(yellow,white,100);
+    return;
+  }
+  if (THRESHOLD >= value && flag == true){
+    flag = false;
+    fade(white,yellow,100);
     return;
   }
   if (flag == true) {
-    fade(yellow,white,100);
-    flag = false;
+    setColor(strip.Color(white[0], white[1], white[2]), 0);
   } else {
     setColor(strip.Color(yellow[0], yellow[1], yellow[2]), 0);
   }
-
 }
 
+// LEDの色をセットする
 void setColor(uint32_t c, uint8_t wait) {
   for(uint16_t i = 0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
@@ -56,6 +61,7 @@ void setColor(uint32_t c, uint8_t wait) {
   delay(wait);
 }
 
+// LEDの色をフェードさせる
 void fade(int *in_c, int *out_c, int wait ) {
     int diff[3];
     float color[3];
@@ -79,6 +85,7 @@ void fade(int *in_c, int *out_c, int wait ) {
     delay(wait);
 }
 
+// 配列の平均値を返す
 float mean(int *array, int arraySize) {
     int sum = 0;
     for (int i = 0; i < arraySize; i++){
@@ -86,6 +93,8 @@ float mean(int *array, int arraySize) {
     }
     return sum / arraySize;
 }
+
+// 配列の中央値を返す
 float median(int *array, int arraySize) {
     int _array[arraySize];
     memcpy(_array, array, arraySize);
